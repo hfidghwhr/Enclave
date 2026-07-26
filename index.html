@@ -4,14 +4,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Enclave</title>
+
 </head>
+
 
 <body>
 
     <h1>Enclave</h1>
 
     <p>Avvio del sistema...</p>
+
+
+    <!-- FIREBASE -->
+    <script type="module">
+
+        // Import Firebase
+        import { initializeApp } 
+        from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+
+
+        // Configurazione Firebase
+        const firebaseConfig = {
+
+           apiKey: "AIzaSyBBb1dZfvhs6ZAcWcRa17rn0nKVDjvs9a8",
+           authDomain: "enclave-v1.firebaseapp.com",
+           projectId: "enclave-v1",
+           storageBucket: "enclave-v1.firebasestorage.app",
+           messagingSenderId: "157107813259",
+           appId: "1:157107813259:web:1371c34306d47d73478d8e"
+
+        };
+
+
+        // Avvio Firebase
+        const app = initializeApp(firebaseConfig);
+
+
+        console.log("Firebase collegato correttamente!");
+
+    </script>
+
 
 </body>
 
