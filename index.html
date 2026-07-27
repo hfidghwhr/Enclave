@@ -214,6 +214,16 @@ Entra in Enclave
 
 <h3 id="welcome"></h3>
 
+    <div id="onlineUsers">
+
+<h4>Utenti online:</h4>
+
+<div id="usersList">
+</div>
+
+</div>
+
+
 
 <div id="messages"></div>
 
@@ -257,7 +267,14 @@ doc
 }
 from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-
+    import {
+getDatabase,
+ref,
+set,
+onValue,
+onDisconnect
+}
+from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
 
 
@@ -283,6 +300,9 @@ const app = initializeApp(firebaseConfig);
 
 
 const db = getFirestore(app);
+
+
+const rtdb = getDatabase(app, "https://enclave-v1-default-rtdb.europe-west1.firebasedatabase.app/");
 
 
 
