@@ -2,6 +2,7 @@
 <html lang="it">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -14,25 +15,53 @@
 
     <h1>Enclave</h1>
 
-    <p>Avvio del sistema...</p>
+    <p id="status">Connessione in corso...</p>
 
-<button id="testButton">
-    Invia messaggio di prova
-</button>
+
+    <div id="chat">
+
+        <div id="messages"></div>
+
+
+        <input 
+            id="messageInput" 
+            type="text" 
+            placeholder="Scrivi un messaggio..."
+        >
+
+        <button id="sendButton">
+            Invia
+        </button>
+
+
+    </div>
+
 
 
     <!-- FIREBASE -->
     <script type="module">
 
+
         // Import Firebase
+
         import { initializeApp } 
         from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
 
-        import { getFirestore, collection, addDoc }
+
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            onSnapshot,
+            orderBy,
+            query
+        }
         from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
 
+
         // Configurazione Firebase
+
         const firebaseConfig = {
 
            apiKey: "AIzaSyBBb1dZfvhs6ZAcWcRa17rn0nKVDjvs9a8",
@@ -45,29 +74,102 @@
         };
 
 
+
         // Avvio Firebase
+
         const app = initializeApp(firebaseConfig);
 
         const db = getFirestore(app);
 
+
         console.log("Firebase collegato correttamente!");
 
-        const testButton = document.getElementById("testButton");
+        document.getElementById("status").innerHTML = 
+        "Firebase collegato ✔";
 
 
-testButton.addEventListener("click", async () => {
 
-    await addDoc(collection(db, "messages"), {
+        // Elementi pagina
 
-        text: "Ciao da Enclave!",
-        timestamp: new Date()
+        const messageInput = document.getElementById("messageInput");
 
-    });
+        const sendButton = document.getElementById("sendButton");
+
+        const messagesDiv = document.getElementById("messages");
 
 
-    console.log("Messaggio salvato!");
 
-});
+        // INVIO MESSAGGIO
+
+        sendButton.addEventListener("click", async () => {
+
+
+            const text = messageInput.value.trim();
+
+
+            if(text === "") return;
+
+
+            await addDoc(collection(db, "messages"), {
+
+
+                text: text,
+
+                timestamp: new Date()
+
+
+            });
+
+
+            messageInput.value = "";
+
+
+        });
+
+
+
+        // LETTURA MESSAGGI IN TEMPO REALE
+
+
+        const messagesQuery = query(
+
+            collection(db, "messages"),
+
+            orderBy("timestamp")
+
+        );
+
+
+
+        onSnapshot(messagesQuery, (snapshot) => {
+
+
+            messagesDiv.innerHTML = "";
+
+
+
+            snapshot.forEach((doc) => {
+
+
+                const message = doc.data();
+
+
+
+                const p = document.createElement("p");
+
+
+                p.textContent = message.text;
+
+
+
+                messagesDiv.appendChild(p);
+
+
+            });
+
+
+        });
+
 
 
     </script>
