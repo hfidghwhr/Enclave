@@ -330,11 +330,41 @@ const sendButton = document.getElementById("sendButton");
 
 const messagesDiv = document.getElementById("messages");
 
+const usersList = document.getElementById("usersList");
+
 
 
 let username = "";
 
+function setUserOnline(){
 
+
+const userRef = ref(rtdb, "users/" + username);
+
+
+set(userRef, {
+
+    online: true
+
+});
+
+
+onDisconnect(userRef).set({
+
+    online: false
+
+});
+
+
+}
+
+const usersRef = ref(rtdb, "users");
+
+onValue(usersRef,(snapshot)=>{
+
+    ...
+
+});
 
 
 
@@ -356,6 +386,7 @@ chat.style.display = "block";
 welcome.innerHTML =
 "Bentornato " + username + " 👋";
 
+setUserOnline();
 
 }
 
@@ -388,7 +419,8 @@ chat.style.display="block";
 welcome.innerHTML =
 "Bentornato " + username + " 👋";
 
-
+setUserOnline();
+    
 });
 
 
