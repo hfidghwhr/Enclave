@@ -349,9 +349,11 @@ set(userRef, {
 });
 
 
-onDisconnect(userRef).set({
+const disconnect = onDisconnect(userRef);
 
-    online: false
+    disconnect.set({
+
+        online: false
 
 });
 
