@@ -15,10 +15,16 @@
 
     <h1>Enclave</h1>
 
+
     <p id="status">Connessione in corso...</p>
 
 
-    <div id="chat">
+    <!-- SCHERMATA ACCESSO -->
+
+    <div id="login">
+
+
+        <h2>Benvenuto su Enclave</h2>
 
 
         <input 
@@ -26,6 +32,23 @@
             type="text" 
             placeholder="Il tuo nome..."
         >
+
+
+        <button id="enterButton">
+            Entra in Enclave
+        </button>
+
+
+    </div>
+
+
+
+    <!-- CHAT -->
+
+    <div id="chat" style="display:none;">
+
+
+        <h3 id="welcome"></h3>
 
 
         <div id="messages"></div>
@@ -36,6 +59,7 @@
             type="text" 
             placeholder="Scrivi un messaggio..."
         >
+
 
         <button id="sendButton">
             Invia
@@ -92,14 +116,23 @@
 
         console.log("Firebase collegato correttamente!");
 
-        document.getElementById("status").innerHTML = 
+        document.getElementById("status").innerHTML =
         "Firebase collegato ✔";
 
 
 
-        // Elementi pagina
+        // ELEMENTI
+
+        const login = document.getElementById("login");
+
+        const chat = document.getElementById("chat");
 
         const nameInput = document.getElementById("nameInput");
+
+        const enterButton = document.getElementById("enterButton");
+
+        const welcome = document.getElementById("welcome");
+
 
         const messageInput = document.getElementById("messageInput");
 
@@ -109,12 +142,75 @@
 
 
 
+        let username = "";
+
+
+
+        // CONTROLLO SE IL NOME ESISTE GIÀ
+
+
+        const savedName = localStorage.getItem("enclaveUsername");
+
+
+        if(savedName){
+
+
+            username = savedName;
+
+
+            login.style.display = "none";
+
+            chat.style.display = "block";
+
+
+            welcome.innerHTML = 
+            "Bentornato " + username + " 👋";
+
+
+        }
+
+
+
+        // ACCESSO
+
+
+        enterButton.addEventListener("click", () => {
+
+
+            const name = nameInput.value.trim();
+
+
+            if(name === "") return;
+
+
+            username = name;
+
+
+            localStorage.setItem(
+                "enclaveUsername",
+                username
+            );
+
+
+            login.style.display = "none";
+
+
+            chat.style.display = "block";
+
+
+            welcome.innerHTML =
+            "Bentornato " + username + " 👋";
+
+
+        });
+
+
+
         // INVIO MESSAGGIO
+
 
         sendButton.addEventListener("click", async () => {
 
-
-            const username = nameInput.value.trim();
 
             const text = messageInput.value.trim();
 
@@ -143,7 +239,7 @@
 
 
 
-        // LETTURA MESSAGGI IN TEMPO REALE
+        // LETTURA MESSAGGI
 
 
         const messagesQuery = query(
@@ -169,12 +265,11 @@
                 const message = doc.data();
 
 
-
                 const p = document.createElement("p");
 
 
-                p.textContent = message.username + ": " + message.text;
-
+                p.textContent =
+                message.username + ": " + message.text;
 
 
                 messagesDiv.appendChild(p);
