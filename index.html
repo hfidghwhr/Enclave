@@ -362,7 +362,25 @@ const usersRef = ref(rtdb, "users");
 
 onValue(usersRef,(snapshot)=>{
 
-    ...
+    usersList.innerHTML = "";
+
+    snapshot.forEach((child) => {
+
+        const user = child.key;
+        const data = child.val();
+
+        if (data.online) {
+
+            const p = document.createElement("p");
+
+            p.textContent = "🟢 " + user;
+
+            usersList.appendChild(p);
+
+        }
+
+    });
+
 
 });
 
