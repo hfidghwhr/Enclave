@@ -20,6 +20,14 @@
 
     <div id="chat">
 
+
+        <input 
+            id="nameInput" 
+            type="text" 
+            placeholder="Il tuo nome..."
+        >
+
+
         <div id="messages"></div>
 
 
@@ -91,6 +99,8 @@
 
         // Elementi pagina
 
+        const nameInput = document.getElementById("nameInput");
+
         const messageInput = document.getElementById("messageInput");
 
         const sendButton = document.getElementById("sendButton");
@@ -104,14 +114,19 @@
         sendButton.addEventListener("click", async () => {
 
 
+            const username = nameInput.value.trim();
+
             const text = messageInput.value.trim();
 
 
-            if(text === "") return;
+            if(username === "" || text === "") return;
+
 
 
             await addDoc(collection(db, "messages"), {
 
+
+                username: username,
 
                 text: text,
 
@@ -158,7 +173,7 @@
                 const p = document.createElement("p");
 
 
-                p.textContent = message.text;
+                p.textContent = message.username + ": " + message.text;
 
 
 
