@@ -3,286 +3,484 @@
 
 <head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Enclave</title>
+<title>Enclave</title>
+
+
+<style>
+
+body {
+
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    margin: 0;
+    padding: 20px;
+
+}
+
+
+h1 {
+
+    text-align: center;
+
+}
+
+
+
+#status {
+
+    text-align: center;
+    color: green;
+
+}
+
+
+
+#login,
+#chat {
+
+    max-width: 500px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+
+}
+
+
+
+input {
+
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+
+}
+
+
+
+button {
+
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    background: black;
+    color: white;
+    cursor: pointer;
+
+}
+
+
+
+#messages {
+
+    height: 350px;
+    overflow-y: auto;
+    padding: 10px;
+    background: #eeeeee;
+    border-radius: 12px;
+    margin-bottom: 10px;
+
+}
+
+
+
+.message {
+
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+
+}
+
+
+
+.myMessage {
+
+    align-items: flex-end;
+
+}
+
+
+
+.otherMessage {
+
+    align-items: flex-start;
+
+}
+
+
+
+.username {
+
+    font-size: 12px;
+    color: gray;
+
+}
+
+
+
+.text {
+
+    padding: 10px 15px;
+    border-radius: 15px;
+    background: white;
+    max-width: 70%;
+
+}
+
+
+
+.myMessage .text {
+
+    background: black;
+    color: white;
+
+}
+
+
+</style>
 
 </head>
 
 
+
 <body>
 
-    <h1>Enclave</h1>
 
+<h1>Enclave</h1>
 
-    <p id="status">Connessione in corso...</p>
 
+<p id="status">
+Connessione in corso...
+</p>
 
-    <!-- SCHERMATA ACCESSO -->
 
-    <div id="login">
 
+<div id="login">
 
-        <h2>Benvenuto su Enclave</h2>
 
+<h2>Benvenuto su Enclave</h2>
 
-        <input 
-            id="nameInput" 
-            type="text" 
-            placeholder="Il tuo nome..."
-        >
 
+<input 
+id="nameInput"
+type="text"
+placeholder="Il tuo nome..."
+>
 
-        <button id="enterButton">
-            Entra in Enclave
-        </button>
 
+<button id="enterButton">
+Entra in Enclave
+</button>
 
-    </div>
 
+</div>
 
 
-    <!-- CHAT -->
 
-    <div id="chat" style="display:none;">
 
+<div id="chat" style="display:none;">
 
-        <h3 id="welcome"></h3>
 
+<h3 id="welcome"></h3>
 
-        <div id="messages"></div>
 
+<div id="messages"></div>
 
-        <input 
-            id="messageInput" 
-            type="text" 
-            placeholder="Scrivi un messaggio..."
-        >
 
 
-        <button id="sendButton">
-            Invia
-        </button>
+<input 
+id="messageInput"
+type="text"
+placeholder="Scrivi un messaggio..."
+>
 
 
-    </div>
+<button id="sendButton">
+Invia
+</button>
 
 
 
-    <!-- FIREBASE -->
-    <script type="module">
+</div>
 
 
-        // Import Firebase
 
-        import { initializeApp } 
-        from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
 
 
-        import { 
-            getFirestore, 
-            collection, 
-            addDoc, 
-            onSnapshot,
-            orderBy,
-            query
-        }
-        from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+<script type="module">
 
 
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
 
-        // Configurazione Firebase
 
-        const firebaseConfig = {
+import { 
+getFirestore, 
+collection, 
+addDoc, 
+onSnapshot,
+orderBy,
+query
+}
+from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-           apiKey: "AIzaSyBBb1dZfvhs6ZAcWcRa17rn0nKVDjvs9a8",
-           authDomain: "enclave-v1.firebaseapp.com",
-           projectId: "enclave-v1",
-           storageBucket: "enclave-v1.firebasestorage.app",
-           messagingSenderId: "157107813259",
-           appId: "1:157107813259:web:1371c34306d47d73478d8e"
 
-        };
 
 
 
-        // Avvio Firebase
+const firebaseConfig = {
 
-        const app = initializeApp(firebaseConfig);
 
-        const db = getFirestore(app);
+apiKey: "AIzaSyBBb1dZfvhs6ZAcWcRa17rn0nKVDjvs9a8",
+authDomain: "enclave-v1.firebaseapp.com",
+projectId: "enclave-v1",
+storageBucket: "enclave-v1.firebasestorage.app",
+messagingSenderId: "157107813259",
+appId: "1:157107813259:web:1371c34306d47d73478d8e"
 
 
-        console.log("Firebase collegato correttamente!");
+};
 
-        document.getElementById("status").innerHTML =
-        "Firebase collegato ✔";
 
 
 
-        // ELEMENTI
+const app = initializeApp(firebaseConfig);
 
-        const login = document.getElementById("login");
 
-        const chat = document.getElementById("chat");
+const db = getFirestore(app);
 
-        const nameInput = document.getElementById("nameInput");
 
-        const enterButton = document.getElementById("enterButton");
 
-        const welcome = document.getElementById("welcome");
+document.getElementById("status").innerHTML =
+"Firebase collegato ✔";
 
 
-        const messageInput = document.getElementById("messageInput");
 
-        const sendButton = document.getElementById("sendButton");
 
-        const messagesDiv = document.getElementById("messages");
 
+const login = document.getElementById("login");
 
+const chat = document.getElementById("chat");
 
-        let username = "";
+const nameInput = document.getElementById("nameInput");
 
+const enterButton = document.getElementById("enterButton");
 
+const welcome = document.getElementById("welcome");
 
-        // CONTROLLO SE IL NOME ESISTE GIÀ
+const messageInput = document.getElementById("messageInput");
 
+const sendButton = document.getElementById("sendButton");
 
-        const savedName = localStorage.getItem("enclaveUsername");
+const messagesDiv = document.getElementById("messages");
 
 
-        if(savedName){
 
+let username = "";
 
-            username = savedName;
 
 
-            login.style.display = "none";
 
-            chat.style.display = "block";
 
+const savedName = localStorage.getItem("enclaveUsername");
 
-            welcome.innerHTML = 
-            "Bentornato " + username + " 👋";
 
 
-        }
+if(savedName){
 
 
+username = savedName;
 
-        // ACCESSO
 
+login.style.display = "none";
 
-        enterButton.addEventListener("click", () => {
+chat.style.display = "block";
 
 
-            const name = nameInput.value.trim();
+welcome.innerHTML =
+"Bentornato " + username + " 👋";
 
 
-            if(name === "") return;
+}
 
 
-            username = name;
 
 
-            localStorage.setItem(
-                "enclaveUsername",
-                username
-            );
+enterButton.addEventListener("click",()=>{
 
 
-            login.style.display = "none";
+const name = nameInput.value.trim();
 
 
-            chat.style.display = "block";
+if(name==="") return;
 
 
-            welcome.innerHTML =
-            "Bentornato " + username + " 👋";
+username=name;
 
 
-        });
+localStorage.setItem(
+"enclaveUsername",
+username
+);
 
 
+login.style.display="none";
 
-        // INVIO MESSAGGIO
+chat.style.display="block";
 
 
-        sendButton.addEventListener("click", async () => {
+welcome.innerHTML =
+"Bentornato " + username + " 👋";
 
 
-            const text = messageInput.value.trim();
+});
 
 
-            if(username === "" || text === "") return;
 
 
 
-            await addDoc(collection(db, "messages"), {
+async function sendMessage(){
 
 
-                username: username,
+const text = messageInput.value.trim();
 
-                text: text,
 
-                timestamp: new Date()
+if(text==="") return;
 
 
-            });
 
+await addDoc(collection(db,"messages"),{
 
-            messageInput.value = "";
 
+username: username,
 
-        });
+text:text,
 
+timestamp:new Date()
 
 
-        // LETTURA MESSAGGI
+});
 
 
-        const messagesQuery = query(
 
-            collection(db, "messages"),
+messageInput.value="";
 
-            orderBy("timestamp")
 
-        );
+}
 
 
 
-        onSnapshot(messagesQuery, (snapshot) => {
+sendButton.addEventListener("click",sendMessage);
 
 
-            messagesDiv.innerHTML = "";
 
+messageInput.addEventListener("keydown",(event)=>{
 
 
-            snapshot.forEach((doc) => {
+if(event.key==="Enter"){
 
+sendMessage();
 
-                const message = doc.data();
+}
 
 
-                const p = document.createElement("p");
+});
 
 
-                p.textContent =
-                message.username + ": " + message.text;
 
 
-                messagesDiv.appendChild(p);
 
 
-            });
+const messagesQuery = query(
 
+collection(db,"messages"),
 
-        });
+orderBy("timestamp")
 
+);
 
 
-    </script>
+
+
+
+onSnapshot(messagesQuery,(snapshot)=>{
+
+
+messagesDiv.innerHTML="";
+
+
+
+snapshot.forEach((doc)=>{
+
+
+const message=doc.data();
+
+
+
+const container=document.createElement("div");
+
+container.classList.add("message");
+
+
+
+if(message.username===username){
+
+container.classList.add("myMessage");
+
+}
+
+else{
+
+container.classList.add("otherMessage");
+
+}
+
+
+
+
+const user=document.createElement("div");
+
+user.classList.add("username");
+
+user.textContent=message.username;
+
+
+
+const text=document.createElement("div");
+
+text.classList.add("text");
+
+text.textContent=message.text;
+
+
+
+container.appendChild(user);
+
+container.appendChild(text);
+
+
+messagesDiv.appendChild(container);
+
+
+
+});
+
+
+
+});
+
+
+
+</script>
 
 
 </body>
