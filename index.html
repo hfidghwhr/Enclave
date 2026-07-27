@@ -146,6 +146,28 @@ button {
 }
 
 
+
+.time {
+
+    font-size: 11px;
+    color: gray;
+    margin-top: 3px;
+
+}
+
+
+
+.deleteButton {
+
+    width: auto;
+    padding: 5px 10px;
+    margin-top: 5px;
+    font-size: 12px;
+    background: #d9534f;
+
+}
+
+
 </style>
 
 </head>
@@ -229,9 +251,12 @@ collection,
 addDoc, 
 onSnapshot,
 orderBy,
-query
+query,
+deleteDoc,
+doc
 }
 from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
 
 
 
@@ -253,6 +278,7 @@ appId: "1:157107813259:web:1371c34306d47d73478d8e"
 
 
 
+
 const app = initializeApp(firebaseConfig);
 
 
@@ -262,6 +288,7 @@ const db = getFirestore(app);
 
 document.getElementById("status").innerHTML =
 "Firebase collegato ✔";
+
 
 
 
@@ -365,7 +392,7 @@ username: username,
 
 text:text,
 
-timestamp:new Date()
+timestamp: Date.now()
 
 
 });
@@ -395,7 +422,7 @@ sendMessage();
 
 });
 
-
+    
 
 
 
@@ -419,14 +446,15 @@ messagesDiv.innerHTML="";
 
 
 
-snapshot.forEach((doc)=>{
+snapshot.forEach((docSnapshot)=>{
 
 
-const message=doc.data();
+const message = docSnapshot.data();
 
 
 
 const container=document.createElement("div");
+
 
 container.classList.add("message");
 
@@ -434,38 +462,154 @@ container.classList.add("message");
 
 if(message.username===username){
 
+
 container.classList.add("myMessage");
+
 
 }
 
 else{
 
+
 container.classList.add("otherMessage");
 
+
 }
+
 
 
 
 
 const user=document.createElement("div");
 
+
 user.classList.add("username");
+
 
 user.textContent=message.username;
 
 
 
+
+
+
 const text=document.createElement("div");
 
+
 text.classList.add("text");
+
 
 text.textContent=message.text;
 
 
 
+
+
+
+const time=document.createElement("div");
+
+
+time.classList.add("time");
+
+
+
+if(message.timestamp){
+
+
+const date = new Date(message.timestamp);
+
+
+
+time.textContent =
+
+date.getHours()
+.toString()
+.padStart(2,"0")
+
++
+
+":"
+
++
+
+date.getMinutes()
+.toString()
+.padStart(2,"0");
+
+
+}
+
+
+
+
+
+
+
 container.appendChild(user);
 
+
 container.appendChild(text);
+
+
+container.appendChild(time);
+
+
+
+
+
+
+
+
+// ELIMINAZIONE MESSAGGIO PROPRIO
+
+
+if(message.username===username){
+
+
+
+const deleteButton=document.createElement("button");
+
+
+
+deleteButton.textContent="Elimina";
+
+
+
+deleteButton.classList.add("deleteButton");
+
+
+
+
+
+deleteButton.addEventListener("click", async ()=>{
+
+
+
+await deleteDoc(
+
+doc(db,"messages",docSnapshot.id)
+
+);
+
+
+
+});
+
+
+
+
+
+container.appendChild(deleteButton);
+
+
+
+}
+
+
+
+
+
+
 
 
 messagesDiv.appendChild(container);
@@ -473,6 +617,16 @@ messagesDiv.appendChild(container);
 
 
 });
+
+
+
+
+
+
+// SCROLL AUTOMATICO IN BASSO
+
+
+messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
 
 
