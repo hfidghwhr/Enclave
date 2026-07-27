@@ -16,6 +16,10 @@
 
     <p>Avvio del sistema...</p>
 
+<button id="testButton">
+    Invia messaggio di prova
+</button>
+
 
     <!-- FIREBASE -->
     <script type="module">
@@ -46,8 +50,25 @@
 
         const db = getFirestore(app);
 
-
         console.log("Firebase collegato correttamente!");
+
+        const testButton = document.getElementById("testButton");
+
+
+testButton.addEventListener("click", async () => {
+
+    await addDoc(collection(db, "messages"), {
+
+        text: "Ciao da Enclave!",
+        timestamp: new Date()
+
+    });
+
+
+    console.log("Messaggio salvato!");
+
+});
+
 
     </script>
 
